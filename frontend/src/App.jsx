@@ -1,35 +1,47 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import AppointmentBooking from './pages/user/AppointmentBooking';
+import BookingConfirmation from './pages/user/BookingConfirmation';
+import AppointmentList from './pages/user/AppointmentList';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [currentPage, setCurrentPage] = useState('booking');
+  const [bookingData, setBookingData] = useState(null);
+
+  const handleBookingSuccess = (data) => {
+    setBookingData(data);
+    setCurrentPage('confirmation');
+  };
+
+  const handleViewAppointments = () => {
+    setCurrentPage('list');
+  };
+
+  const handleBackToBooking = () => {
+    setCurrentPage('booking');
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="app-container">
+      {currentPage === 'booking' && (
+        <AppointmentBooking
+          onSuccess={handleBookingSuccess}
+          onViewAppointments={handleViewAppointments}
+        />
+      )}
+      {currentPage === 'confirmation' && (
+        <BookingConfirmation
+          bookingData={bookingData}
+          onViewAppointments={handleViewAppointments}
+          onBackToBooking={handleBackToBooking}
+        />
+      )}
+      {currentPage === 'list' && (
+        <AppointmentList
+          onBackToBooking={handleBackToBooking}
+        />
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
